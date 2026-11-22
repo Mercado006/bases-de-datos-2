@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz 1P Bases de Datos</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#14202b;--mut:#5b6b79;--line:#d5dde4;--ac:#0f766e;--ok:#1a7f4b;--okb:#e3f4ea;--no:#b42318;--nob:#fde8e6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161c;--card:#18212a;--ink:#e6edf3;--mut:#9aa9b6;--line:#2c3945;--ac:#5eead4;--ok:#5fd493;--okb:#12301f;--no:#ff8a80;--nob:#3a1816}}
+:root[data-theme="dark"]{--bg:#10161c;--card:#18212a;--ink:#e6edf3;--mut:#9aa9b6;--line:#2c3945;--ac:#5eead4;--ok:#5fd493;--okb:#12301f;--no:#ff8a80;--nob:#3a1816}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}
+#st{font-weight:600;color:var(--ac);margin:0 0 8px}
+.q{border-top:1px solid var(--line);padding:20px 0}
+.t{font-weight:600;margin:0 0 10px}
+pre{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px;overflow-x:auto;font:13px/1.5 "IBM Plex Mono",ui-monospace,monospace;margin:0 0 12px}
+.o{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin:0 0 8px;cursor:pointer}
+.o:hover:not(:disabled){border-color:var(--ac)}
+.o:focus-visible,#rs:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.o:disabled{cursor:default}
+.o.sel{border-color:var(--ac);box-shadow:inset 0 0 0 1px var(--ac)}
+.o.ok{background:var(--okb);border-color:var(--ok)}
+.o.no{background:var(--nob);border-color:var(--no)}
+#rs{font:inherit;font-weight:600;color:var(--bg);background:var(--ac);border:0;border-radius:6px;padding:10px 16px;cursor:pointer;margin-top:20px}
+.fn{color:var(--mut);font-size:.9rem;margin-top:24px}
+
+[hidden]{display:none!important}
+.cfg{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:0 0 16px}
+.cfg fieldset{border:0;padding:0;margin:0 0 18px}
+.cfg legend{font-weight:600;padding:0;margin:0 0 8px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cfg input[type=number]{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:5.5em}
+.cfg input[type=number]:focus-visible,.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.chip{font:inherit;font-size:.9rem;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.chip:hover{border-color:var(--ac)}
+.opt{display:flex;gap:8px;align-items:flex-start;margin:0 0 6px;cursor:pointer}
+.opt input{margin-top:.35em;accent-color:var(--ac)}
+.hint{color:var(--mut);font-size:.9rem;margin:6px 0 0}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn{font:inherit;font-weight:600;color:var(--bg);background:var(--ac);border:0;border-radius:6px;padding:10px 16px;cursor:pointer}
+.btn.sec{color:var(--ink);background:transparent;border:1px solid var(--line)}
+.bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;align-items:baseline;margin:0 0 8px}
+#tm{font-weight:600;font-variant-numeric:tabular-nums;color:var(--mut);margin:0}
+#tm.low{color:var(--no)}
+.res{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px;margin:0 0 8px}
+.res h2{font-size:1.2rem;margin:0 0 6px}
+.res p{margin:0 0 6px}
+.o.rev{border-color:var(--ok);border-style:dashed}
+.verdict{font-weight:600;border-radius:6px;padding:8px 12px;margin:0 0 10px!important}
+.verdict.ok{color:var(--ok);background:var(--okb);border:1px solid var(--ok)}
+.verdict.no{color:var(--no);background:var(--nob);border:1px solid var(--no)}
+</style></head><body><main>
+<h1>Quiz del primer parcial: Bases de Datos</h1>
+<section id="cfg" class="cfg" aria-label="Opciones de práctica">
+<p class="sub">Armá tu práctica y empezá. Elegí si querés ver la corrección en cada respuesta o recién al final, como en un simulacro.</p>
+<fieldset>
+<legend>Modelo de parcial</legend>
+<select id="mdl" aria-label="Modelo de parcial" style="font:inherit;padding:6px 8px;max-width:100%">
+<option value="all" selected>Todos los modelos (banco completo)</option>
+<option value="g26">Todos los modelos de 2C 2026</option>
+<option value="g25">Todos los modelos de 2025</option>
+<optgroup label="2C 2026">
+<option value="m1">exmn.pdf</option>
+<option value="m2">MIeL---Materias-Interactivas-en-Linea_20.pdf</option>
+<option value="m3">MIeL---Materias-Interactivas-en-LineaSA.pdf</option>
+</optgroup>
+<optgroup label="2025">
+<option value="p1">Parcial 29/5 (19:46) · 1C 2025</option>
+<option value="p2">Parcial 29/5 (19:57) · 1C 2025</option>
+<option value="p3">Parcial 2/10 · 2C 2025</option>
+</optgroup>
+</select>
+<p class="hint" id="mmsg">Si elegís un modelo (o todos los de 2C 2026 / de 2025), el quiz usa solo las preguntas de esos parciales, con la cantidad completa por defecto.</p>
+</fieldset>
+<fieldset>
+<legend>Tema</legend>
+<div class="row">
+<button type="button" class="chip" id="tall">Todos</button>
+<button type="button" class="chip" id="tnone">Ninguno</button>
+</div>
+<div id="tbox" style="margin-top:10px"></div>
+<p class="hint" id="tmsg" hidden>Elegí al menos un tema para empezar.</p>
+</fieldset>
+<fieldset>
+<legend>Cantidad de preguntas</legend>
+<div class="row">
+<input id="qn" type="number" min="1" step="1" inputmode="numeric" aria-label="Cantidad de preguntas">
+<span>de <span id="qmax"></span> disponibles en los temas elegidos</span>
+</div>
+<div class="row" style="margin-top:8px">
+<button type="button" class="chip" data-q="10">10</button>
+<button type="button" class="chip" data-q="20">20</button>
+<button type="button" class="chip" data-q="30">30</button>
+<button type="button" class="chip" data-q="all">Todas</button>
+</div>
+</fieldset>
+<fieldset>
+<legend>Orden</legend>
+<label class="opt"><input type="radio" name="ord" value="rnd" checked><span>Aleatorio<br><span class="hint">Se sortean las preguntas del banco completo.</span></span></label>
+<label class="opt"><input type="radio" name="ord" value="seq"><span>Secuencial<br><span class="hint">Las primeras de la lista, en el orden original.</span></span></label>
+</fieldset>
+<fieldset>
+<legend>Corrección</legend>
+<label class="opt"><input type="radio" name="cor" value="now" checked><span>Al instante<br><span class="hint">Cada respuesta se marca como correcta o incorrecta apenas la elegís.</span></span></label>
+<label class="opt"><input type="radio" name="cor" value="end"><span>Al final (modo simulacro)<br><span class="hint">No ves si está bien o mal hasta tocar Finalizar. Podés cambiar tus respuestas antes de terminar.</span></span></label>
+</fieldset>
+<fieldset>
+<legend>Tiempo límite (total)</legend>
+<div class="row">
+<input id="tl" type="number" min="0" step="1" value="0" inputmode="numeric" aria-label="Minutos de tiempo límite">
+<span>minutos</span>
+</div>
+<div class="row" style="margin-top:8px">
+<button type="button" class="chip" data-t="0">Sin límite</button>
+<button type="button" class="chip" data-t="15">15 min</button>
+<button type="button" class="chip" data-t="30">30 min</button>
+<button type="button" class="chip" data-t="60">60 min</button>
+</div>
+<p class="hint">0 = sin límite. Si se acaba el tiempo, el quiz se cierra y se muestra el resultado.</p>
+</fieldset>
+<button id="go" type="button" class="btn">Empezar</button>
+</section>
+<section id="run" hidden>
+<div class="bar"><p id="st" aria-live="polite"></p><p id="tm"></p></div>
+<div id="res" class="res" hidden tabindex="-1"></div>
+<div id="qs"></div>
+<div class="row" style="margin-top:20px">
+<button id="fin" type="button" class="btn">Finalizar</button>
+<button id="back" type="button" class="btn sec">Cambiar opciones</button>
+</div>
+</section>
+<p class="fn">Preguntas y opciones tomadas de seis modelos del primer parcial (resultados de MIeL): tres de 2C 2026 y tres de 2025 (1C: parciales del 29/5; 2C: parcial del 2/10), con el texto original. Debajo de cada pregunta se indica en qué archivos aparece y el cuatrimestre (2C 2026, 1C 2025 o 2C 2025). Las opciones no se mezclan porque algunas dependen de su posición (“Todas las respuestas son correctas”). Cuando una pregunta tiene variantes con distintas opciones, cada variante figura por separado.</p>
+</main>
+<script>
+const T="Todas las respuestas son correctas.",N="Ninguna de las respuestas es correcta.",M="Ninguna de las respuesta es correcta.",TA="Todas las respuestas anteriores son correcta.";
+const m=(...n)=>(n.length>1?"Aparece en: ":"Origen: ")+n.map(x=>["exmn.pdf","MIeL---Materias-Interactivas-en-Linea_20.pdf","MIeL---Materias-Interactivas-en-LineaSA.pdf"][x-1]).join(", ")+" · 2C 2026";
+const k=(t,q,o,a,s,c)=>{const x={t,o,a,s};if(q)x.q=q;if(c)x.c=c;return x};
+const MAXO=["Obtiene el máximo valor del contenido que posee ese campo en la tabla consultada.","Obtiene el máximo valor del contenido alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.","Obtiene el máximo valor del contenido numerico que posee ese campo en la tabla consultada.","Obtiene el máximo valor del contenido numerico y alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada."];
+const I1="Restricciones de Clave Primaria: Puedes insertar valores duplicados en una columna que esté definida como clave primaria.",I2="Restricciones de Clave Foránea: Los valores que insertes en una columna con clave foránea no deben coincidir con los valores existentes en la tabla referenciada de forma que se genere una nueva clave.",I3="Restricciones de Unicidad: Puedes insertar valores duplicados en columnas con restricciones de unicidad.";
+const U3="Restricciones de Unicidad: No puedes actualizar valores en una columna que tengan una restricción de unicidad a fin de que se conviertan en valores duplicados.";
+const DW="Todas las respuestas anteriores son correcta.";
+const TS="Es un leguaje utilizado por casi todos los tipos de bases de datos relacionales y no relacionales que existen.",TS2="Incluye todas las características de SQL estándar, pero restringe los elementos adicionales que mejoran la funcionalidad y flexibilidad del lenguaje.",TS0="Es el lenguaje de programación que se emplea para mandar peticiones entre el Servidor y el Cliente.";
+const E3="Los nombres de las tablas deben ser únicos en la base de datos.",E4="Los nombres de las columnas deben ser únicos en la tabla.",E5="No puede haber dos registros con el mismo valor de la clave primaria.",E6="Dentro de las restricciones que podemos establecer desde el diseño de los campos: No admita valores Nulos, ni valores duplicados.";
+const FK1="Se utiliza para establecer y mantener la integridad referencial entre dos relaciones, asegurando que las relaciones entre los datos sean consistentes y válidas.",FK2="Es un campo (o un conjunto de campos) en un atributo que se utiliza para hacer referencia a la clave primaria en otra tabla.",FK3="Su principal propósito es garantizar que los valores en la columna de clave foránea correspondan a los valores existentes en la columna de clave primaria de la tabla referenciada.";
+const PK1="Es un campo o un grupo de campos que fuerzan la integridad de los datos en la tabla, asegurándose que cada registro en la tabla es único.";
+const IXQ="Una tabla se indexa por una relacion o varias.",IXV="Posibilita el acceso directo y rápido haciendo vistas para las búsquedas.",IXS="Con índice, SQL Server recorre secuencialmente toda la tabla para encontrar un registro.";
+const CL1="Los registros con distinto valor de campo se agrupan juntos",CL3="Un índice clustered define el orden en el cual los resultados de las consultas son procesadas con los datos en la tabla.";
+const NC3="Se emplea cuando se realizan distintos tipos de búsquedas frecuentemente, con campos en los que los datos son únicos.";
+const VW1="Permiten el acceso a todos los datos y dejando disponibles los datos que no intervienen en el resto de la información de la consulta que genera la vista.",VW2="Permiten operar con los datos de una vista como si se tratara de una tabla, sin poder modificar tales datos.",VW3="No se pueden gestionar permisos a un usuario para que solamente pueda acceder a los datos a través de vistas.";
+const FN4="La participación define si la entidad debe estar involucrada en la relación (total o parcial).";
+const SCH="Dado el siguiente esquema:\nRequest (NoRequest, IP, Fecha, Hora, IDMetodo)\nPage (IP, WebPage, IDAmbiente)\nMetodo (ID, Clase, Metodo)\nAmbiente (ID, Descripcion)\n\n";
+const CE="Dadas las siguientes tablas: ";
+const Q=[
+k("Teoria - BBDD - Clausula LIKE","La clausula LIKE:",["Determina el intervalo de valores para una consulta.","Agrupa Valores del mismo tipo.","Realiza alguna operacion Matematica sobre los valores obtenidos de la consulta.","Determina si una cadena de caracteres específica coincide con un patrón especificado.",T,N],3,m(1,3)),
+k("Teoria - BBDD - Clausula LIKE","La clausula LIKE:",["Durante la operación de búsqueda de coincidencias de patrón, los caracteres normales pueden no coincidir exactamente con los caracteres especificados en la cadena de caracteres.","Durante la operación de búsqueda de coincidencias de patrón, los caracteres comodines pueden no coincidir con fragmentos arbitrarios de la cadena.","Realiza alguna operacion Matematica sobre los valores obtenidos de la consulta.","Determina si una cadena de caracteres específica coincide con un patrón especificado, y el patrón puede contener caracteres normales y/o comodínes.",T,N],3,m(2)),
+k("Teoria - BBDD - Funciones de Agregado","Funcion MAX: Con el uso de la funcion MAX (campoX)",[...MAXO,T,N],2,m(1)),
+k("Teoria - BBDD - Funciones de Agregado","Funcion SUM: Con el uso de la funcion SUM (campoX)",["Suma el contenido que posee ese campo en la tabla consultada.","Suma el contenido numerico que posee ese campo en la tabla consultada.","Suma el contenido alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.","Suma el contenido numerico y alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.",T,N],1,m(2)),
+k("Teoria - BBDD - Funciones de Agregado","Funcion AVG: Con el uso de la funcion AVG (campoX)",["Obtiene el promedio valor del contenido numerico que posee ese campo en la tabla consultada.","Obtiene el promedio valor del contenido que posee ese campo en la tabla consultada.","Obtiene el promedio valor del contenido alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.","Obtiene el promedio valor del contenido numerico y alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.",T,N],0,m(3)),
+k("Teoria - BBDD - Funcion GROUP BY","Funcion GROUP BY: Con el uso de la funcion GROUP BY (campoX)",["Agrupa las filas que tienen valores iguales en la columna especificada, permitiendo calcular agregados por cada grupo","Es especialmente útil en consultas que implican funciones de agregación (como SUM, COUNT, AVG, MIN, MAX).","Organiza filas que tienen valores diferentes en columnas específicas en grupos.","Permite calcular valores agregados para cada diferentes grupos.",T,N],4,m(1,2)),
+k("Teoria - BBDD - Funcion GROUP BY","Funcion GROUP BY: Con el uso de la funcion GROUP BY (campoX)",["Devuelve la tabla ordenada por el valor agrupado de mayor a menor.","Devuelve la solo la categoria agrupada del valor mas grande de elementos del tipo listado.","Devuelve la cantidad de registros si necesitamos obtener la cantidad de un grupo.","Devuelve solo la categoria del grupo especificado en la clausula where, caso contrario no devuelve nada.",T,N],2,m(3)),
+k("Teoria - BBDD - Funcion HAVING","Funcion HAVING: Clausulas de la funcion HAVING (campoX)",["Uso con funciones agregadas: La cláusula HAVING se utiliza principalmente para filtrar los resultados de una consulta después de que se hayan aplicado las funciones agregadas.","Debe ir acompañada de GROUP BY. Si no hay una agrupación, no tiene sentido aplicar HAVING.","Puede no ir acompañada GROUP BY. Si no hay una agrupación, la forma de usar dicha operaciones es si hay funciones agregadas.","Filtrado después de la agregación: A diferencia de WHERE, que se usa para filtrar filas antes de realizar cualquier agregación.",T,N],4,m(1)),
+k("Teoria - BBDD - Funcion HAVING","Funcion HAVING: Clausulas de la funcion HAVING (campoX)",["Uso con funciones agregadas: La cláusula HAVING se utiliza principalmente para filtrar los resultados de una consulta después de que se hayan aplicado las funciones agregadas.","Sin uso con funciones agregadas: La cláusula HAVING se puede utilizar para filtrar filas individuales sin la necesidad de las funciones de agregación.","Puede no ir acompañada GROUP BY. Si no hay una agrupación, no hay forma de usar esta funcion.","Filtrado después de la agregación: Al igual del WHERE, se usa para filtrar filas antes de realizar cualquier agregación.",T,N],0,m(2,3)),
+k("Teoria - BBDD - Funcion JOIN","Funcion FULL JOIN",["Devuelve todas las filas cuando hay una coincidencia en una de las dos tablas, o en ambas.","Si no hay coincidencia, los valores NULL se muestran para las filas no coincidentes de la otra tabla.","Devuelve todas las filas de la tabla de la izquierda (la primera mencionada en la consulta) y las filas coincidentes de la tabla de la derecha.","Devuelve todas las filas de la tabla de la derecha y las filas coincidentes de la tabla de la izquierda.",T,N],4,m(1)),
+k("Teoria - BBDD - Funcion JOIN","Funcion RIGHT JOIN",["Devuelve todas las filas de la tabla de la derecha y las filas coincidentes de la tabla de la izquierda.","Si no hay coincidencia en la tabla de la derecha, las columnas correspondientes de la tabla derecha contendrán valores NULL.","Devuelve todas las filas cuando hay una coincidencia en una de las dos tablas.","Combina cada fila de la primera tabla con todas las filas de la segunda tabla.",T,N],0,m(2)),
+k("Teoria - BBDD - Funcion JOIN","Funcion CROSS JOIN",["Devuelve el producto cartesiano de las un valor de la primer tabla, con todos los valores de la 2da tabla.","Si no hay coincidencia en la tabla de la derecha, las columnas correspondientes de la tabla derecha contendrán valores NULL.","Devuelve el producto cartesiano de las dos tablas, es decir, combina cada fila de la primera tabla con todas las filas de la segunda tabla.","Es simplemente un JOIN donde una tabla se une consigo misma.",T,N],2,m(3)),
+k("Teoria - BBDD - Funcion INSERT - Restricciones","Sentencia INSERT => Restricciones de Integridad de Datos:",[I1,I2,I3,"Restricciones de Verificación: Los valores insertados no deben cumplir con las condiciones definidas en las restricciones de verificación.",TA,N],5,m(1)),
+k("Teoria - BBDD - Funcion INSERT - Restricciones","Sentencia INSERT => Restricciones de Integridad de Datos:",[I1,I2,I3,"Restricciones de Verificación: Los valores insertados deben cumplir con las condiciones definidas en las restricciones de verificación.",TA,N],3,m(2)),
+k("Teoria - BBDD - Funcion INSERT - Restricciones","Sentencia INSERT => Restricciones de Integridad de Datos:",["Restricciones de Clave Primaria: No puedes insertar valores duplicados en una columna que esté definida como clave primaria.","Restricciones de Clave Foránea: Los valores que insertes en una columna con clave foránea deben coincidir con los valores existentes en la tabla referenciada o ser nulos.","Restricciones de Unicidad: No puedes insertar valores duplicados en columnas con restricciones de unicidad.","Restricciones de Verificación: Los valores insertados deben cumplir con las condiciones definidas en las restricciones de verificación.",TA,N],4,m(3)),
+k("Teoria - BBDD - Funcion UPDATE - Restricciones","Sentencia UPDATE => Restricciones de Integridad de Datos:",["Restricciones de Tipo de Datos: Los nuevos valores deben coincidir con el tipo de datos de la columna. Por ejemplo, no puedes actualizar una columna de tipo entero con una cadena de caracteres.","Restricciones de Valores Nulos: Si una columna está definida como NOT NULL, no puedes actualizar el valor de esa columna a NULL a menos que se cambie la definición de la columna para permitir valores nulos.","Restricciones de Default: Si una columna tiene un valor predeterminado, actualizar la columna a un valor que no sea NULL no activará el valor predeterminado, pero si se pone en NULL y la columna permite valores nulos, el valor predeterminado puede aplicarse en inserciones futuras.","Restricciones de Transacciones: Las operaciones de UPDATE se pueden agrupar en transacciones. Si una transacción falla, se pueden deshacer todos los cambios realizados durante esa transacción, manteniendo la consistencia de la base de datos.",DW,N],4,m(1)),
+k("Teoria - BBDD - Funcion UPDATE - Restricciones","Sentencia UPDATE => Restricciones de Integridad de Datos:",["Claves Primarias: No puedes actualizar una clave primaria de manera que se convierta en un valor duplicado.","Claves Foráneas: Los valores actualizados en una columna de clave foránea deben seguir existiendo en la tabla referenciada, a menos que se actualicen las referencias en las tablas relacionadas.",U3,"Restricciones de Verificación: Los nuevos valores deben cumplir con las condiciones definidas en las restricciones de verificación.",DW,N],4,m(2)),
+k("Teoria - BBDD - Funcion UPDATE - Restricciones","Sentencia UPDATE => Restricciones de Integridad de Datos:",["Claves Primarias: Puedes actualizar una clave primaria de manera que se convierta en un valor duplicado.","Claves Foráneas: Los valores actualizados en una columna de clave foránea no deben seguir existiendo en la tabla referenciada, a menos que se actualicen las referencias en las tablas relacionadas.",U3,"Restricciones de Verificación: Los nuevos valores deben no cumplir con las condiciones definidas en las restricciones de verificación.",DW,N],2,m(3)),
+k("Teoria - BBDD - Funcion DELETE - Restricciones","Sentencia DELETE => Restricciones de Datos:",["Restricciones de Seguridad: Debes tener los permisos adecuados para ejecutar una sentencia DELETE. Los permisos necesarios pueden variar según el rol del usuario y la configuración de seguridad de la base de datos.","Restricciones de Identidad: Aunque no puedes eliminar directamente restricciones específicas relacionadas con columnas de identidad (IDENTITY), debes considerar que la eliminación de una fila con una columna de identidad no afectará el valor de la columna de identidad en otras filas.","Restricciones de Datos: No hay restricciones específicas en cuanto a los datos que puedes eliminar más allá de las reglas generales mencionadas, pero debes estar consciente de la posibilidad de eliminar datos importantes o necesarios para el funcionamiento de la aplicación o de otros procesos.","Restricciones de Borrado en Cascada: En tablas con reglas de borrado en cascada (ON DELETE CASCADE), la eliminación de una fila puede desencadenar la eliminación automática de filas relacionadas en otras tablas.",DW,N],4,m(1)),
+k("Teoria - BBDD - Funcion DELETE - Restricciones","Sentencia DELETE => Restricciones de Datos:",["Restricciones de Transacciones: Las operaciones de DELETE no se pueden agrupar en transacciones. Si una transacción falla, SQL Server puede revertir todas las eliminaciones realizadas durante esa transacción, manteniendo la integridad de la base de datos.","Restricciones de Vista: Si intentas eliminar filas a través de una vista, la vista no es requerida que se actualizable.","Restricciones de Concurrencia: SQL Server no utiliza bloqueos para manejar la concurrencia durante la operación de DELETE, eso es debido a que bloqueos pueden afectar el rendimiento y la accesibilidad de los datos durante la eliminación.","Restricciones de Filtros: La cláusula WHERE no debe usarse para la sentencia DELETE, ya que no se borrarian todos los registro de todas las filas de la tabla, lo que podría resultar en la pérdida accidental de datos.",DW,N],5,m(2,3)),
+k("Programación en SQL Server","TRANSACT-SQL",[TS0,"Es un lenguaje exclusivo de SQL Server, pero basado en el lenguaje SQL estándar (ANSI SQL).",TS,TS2,T,M],1,m(1)),
+k("Programación en SQL Server","TRANSACT-SQL",[TS0,"Es un lenguaje OpenSource, pero basado en el lenguaje SQL estándar (ANSI SQL).",TS,TS2,"Mas de una respuesta es correcta.",T,M],6,m(2,3)),
+k("SQL - Caracteristicas","Extensiones del Lenguaje SQL:",["Procedimientos Almacenados (Stored Procedures): permite definir procedimientos almacenados que encapsulan y reutilizan código SQL. Los procedimientos almacenados pueden aceptar parámetros y devolver resultados, lo que facilita la modularización y la reutilización de código.","Funciones Definidas por el Usuario (UDFs): Puedes definir funciones personalizadas que pueden ser utilizadas en consultas para realizar cálculos complejos o transformaciones de datos.","Triggers: T-SQL soporta triggers que son procedimientos que se ejecutan automáticamente en respuesta a eventos específicos, como inserciones, actualizaciones o eliminaciones en una tabla.","Proporciona dos tipos de sentencias diferentes: Especificar el esquema relacional: DDL (DATA DEFINITION LANGUAGE) y Expresar las consultas y actualizaciones de la base de datos: DML(DATA MANIPULATION LANGUAGE).",T,M],4,m(1)),
+k("SQL - Caracteristicas","Extensiones del Lenguaje SQL:",["Procedimientos Almacenados (Stored Procedures): permite definir procedimientos almacenados que encapsulan y reutilizan código SQL. Los procedimientos almacenados no pueden aceptar parámetros y devolver resultados, lo que facilita la modularización y la reutilización de código.","Funciones Definidas por el Usuario (UDFs): Puedes definir funciones personalizadas que pueden ser utilizadas en consultas, pero no para realizar cálculos complejos o transformaciones de datos.","Triggers: T-SQL soporta triggers que son procedimientos que se ejecutan unicamente de forma manual por el DBA ante eventos específicos, como inserciones, actualizaciones o eliminaciones en una tabla.","Proporciona tres tipos de sentencias diferentes: Especificar el esquema relacional: DDL (DATA DEFINITION LANGUAGE); Expresar las consultas y actualizaciones de la base de datos: DML(DATA MANIPULATION LANGUAGE) y La generacion de consultas con alteracion de tipo de datos DAL (DATA ALTERATION LANGUAGE).",T,M],5,m(2)),
+k("SQL - Caracteristicas","Extensiones del Lenguaje SQL:",["Procedimientos Almacenados (Stored Procedures): permite definir procedimientos almacenados que encapsulan y reutilizan código SQL. Los procedimientos almacenados no pueden aceptar parámetros y devolver resultados, lo que facilita la modularización y la reutilización de código.","Funciones Definidas por el Usuario (UDFs): Puedes definir funciones personalizadas que pueden ser utilizadas en consultas para realizar cálculos complejos o transformaciones de datos.","Triggers: T-SQL soporta triggers que son procedimientos que se ejecutan unicamente de forma manual por el DBA ante eventos específicos, como inserciones, actualizaciones o eliminaciones en una tabla.","Proporciona tres tipos de sentencias diferentes: Especificar el esquema relacional: DDL (DATA DEFINITION LANGUAGE); Expresar las consultas y actualizaciones de la base de datos: DML(DATA MANIPULATION LANGUAGE) y La generacion de consultas con alteracion de tipo de datos DAL (DATA ALTERATION LANGUAGE).",T,M],1,m(3)),
+k("Diagrama de Entidad Relacion => ENTIDAD","Caracteristicas de una ENTIDAD:",["Una entidad representa un objeto, concepto o evento del mundo abstracto sobre el que se desea modificar información.","Cada ejemplar de una entidad se denomina objeto.","Las entidades son modeladas en la base de datos como objetos.","Posee Atributos: que son las propiedades o características de una entidad. Cada atributo almacena un tipo específico de información sobre la entidad.",T,M],3,m(1)),
+k("Diagrama de Entidad Relacion => ENTIDAD","Caracteristicas de una ENTIDAD:",["Una entidad representa un objeto, concepto o evento del mundo abstracto sobre el que se desea modificar información.","Cada ejemplar de una entidad se denomina objeto.","Las entidades son modeladas en la base de datos como objetos.","Posee Atributos: que son las configuraciones de una entidad. Cada atributo almacena un parametro de configuracion de información sobre la entidad.",T,M],5,m(2)),
+k("Diagrama de Entidad Relacion => ENTIDAD","Caracteristicas de una ENTIDAD:",["Una entidad representa un objeto, concepto o evento del mundo abstracto sobre el que se desea modificar información.","Cada ejemplar de una entidad se denomina objeto.","Las entidades son modeladas en la base de datos como tablas.","Posee Atributos: que son las configuraciones de una entidad. Cada atributo almacena un parametro de configuracion de información sobre la entidad.",T,M],2,m(3)),
+k("Diagrama de Entidad Relacion => RELACION","Caracteristicas de una RELACION:",["Una relación describe cierta interdependencia entre más entidades y no tiene sentido sin las entidades que relaciona.","Las relaciones son definidas con claves primarias y claves foráneas, manteniendo la integridad referencial.","La cardinalidad especifica cuántas instancias de una relacion pueden estar asociadas con instancias de otra entidad (uno a uno, uno a muchos, muchos a muchos).","La participación define si la relacion debe estar involucrada con el atributo (total o parcial).",T,M],1,m(1)),
+k("Diagrama de Entidad Relacion => RELACION","Caracteristicas de una RELACION:",["Una relación describe cierta interdependencia entre una o más entidades y no tiene sentido sin las entidades que relaciona.","Las relaciones son definidas con claves primarias y claves foráneas, manteniendo la integridad referencial.","La cardinalidad especifica cuántas instancias de una entidad pueden estar asociadas con instancias de otra entidad (uno a uno, uno a muchos, muchos a muchos).",FN4,T,M],4,m(2,3)),
+k("Diagrama de Entidad Relacion => Cardinalidad","CARDINALIDAD DE LAS RELACIONES",["Una relación describe la interdependencia de un tipo especifico entre una o más entidades.","Relaciones de uno a uno: una instancia de la entidad a se relaciona con una y o mas entidades una de la entidad b.","Relaciones de uno a muchos: cada instancia de la entidad a se relaciona con una instancia de la entidad b.","Relaciones de muchos a muchos: cualquier instancia de la entidad a se relaciona con cualquier instancia de la entidad b.",T,M],3,m(1,3)),
+k("Diagrama de Entidad Relacion => Cardinalidad","CARDINALIDAD DE LAS RELACIONES",["Una relación describe cierta interdependencia (de cualquier tipo) entre una o más entidades.","Relaciones de uno a uno: una instancia de la entidad a se relaciona con una o dos de la entidad b.","Relaciones de uno a muchos: cada instancia de la entidad a se relaciona con varios atributos de la entidad b.","Relaciones de muchos a muchos: cualquier instancia de la entidad a se relaciona con cualquier atributo de la entidad b.",T,M],0,m(2)),
+k("Diagrama de Entidad Relacion => Atributos","ATRIBUTOS:",["Un atributo de una Relacion representa alguna propiedad que nos interesa almacenar.","Es una característica o propiedad que describe una relacion.","En el modelo de bases de datos, los atributos son almacenados como columnas o campos de una tabla.","Cada atributo almacena un tipo específico de información sobre la relacion.",T,M],2,m(1)),
+k("Diagrama de Entidad Relacion => Atributos","ATRIBUTOS:",["Un atributo de una Relacion representa alguna propiedad que nos interesa almacenar.","Es una característica o propiedad que describe una relacion.","En el modelo de bases de datos, los atributos son almacenados como relaciones entre una o mas entidades.","Cada atributo almacena un tipo específico de información sobre la entidad.",T,M],3,m(2,3)),
+k("Diagrama de Entidad Relacion => Restricciones de Tablas","RESTRICCIONES DE TABLAS:",["Los nombres de las tablas pueden no ser únicos en la base de datos.","Los nombres de las columnas pueden no ser únicos en la tabla.","Puede haber dos registros con el mismo valor de la clave primaria.",E6,T,M],3,m(1)),
+k("Diagrama de Entidad Relacion => Restricciones de Tablas","RESTRICCIONES DE TABLAS:",[E5,E3,E4,E6,T,M],4,m(2,3)),
+k("CLAVE PRIMARIA","CLAVE PRIMARIA:",[PK1,"Solo puede haber una sola clave primaria por tabla.","Una columna (o un conjunto de columnas) con una restricción de clave primaria no puede tener valores duplicados ni nulos.","Se crea un índice al definir una clave primaria.",T,M],4,m(1)),
+k("CLAVE PRIMARIA","CLAVE PRIMARIA:",[PK1,"Puede haber una o dos claves primarias por tabla.","Una columna (o un conjunto de columnas) con una restricción de clave primaria puede tener un unico valor nulo.","Se crea un atributo para definir una clave primaria.",T,M],0,m(2)),
+k("CLAVE PRIMARIA","CLAVE PRIMARIA:",["Es un campo o un grupo de campos que fuerzan la integridad de los datos en la tabla, asegurándose que cada registro en la tabla es consecutivo y se pueden agrupar por ser iguales.","Puede haber una o dos claves primarias por tabla.","Una columna (o un conjunto de columnas) con una restricción de clave primaria puede tener un unico valor nulo.","Se crea un índice al definir una clave primaria.",T,M],3,m(3)),
+k("CLAVE FORANEA","CLAVE FORANEA:",[FK1,FK2,"Su principal propósito es garantizar que los valores en la columna del atributo de la relacion correspondan a los valores existentes en la columna de relacion de la tabla referenciada.","Mantiene la integridad referencial entre los atributos, evitando la inserción de valores en la tabla hija que no existan en la tabla padre.",T,M],5,m(1)),
+k("CLAVE FORANEA","CLAVE FORANEA:",[FK1,FK2,FK3,"Mantiene la integridad referencial entre las tablas, evita la inserción de valores en la tabla hija que no existan en la tabla padre.",T,M],2,m(2)),
+k("CLAVE FORANEA","CLAVE FORANEA:",[FK1,FK2,FK3,"Mantiene la integridad referencial entre los atributos, evitando la inserción de valores en la tabla hija que no existan en la tabla padre.",T,M],2,m(3)),
+k("Normalizacion de Base de Datos","Las BBDDs se Normalizan con el proposito de:",["Asegurar la redundancia de los datos.","Aunmentar los volumenes de datos de actualización de los datos en las tablas.","Proteger la integridad de los datos.","Realizacion de Actualización de datos sin integridad.",T,M],2,m(1)),
+k("Normalizacion de Base de Datos","Las BBDDs se Normalizan con el proposito de:",["Evitar la redundancia de los datos.","Disminuir problemas de actualización de los datos en las tablas.","Proteger la integridad de los datos.","Evitar Anomalías de Actualización.",T,M],4,m(2)),
+k("Normalizacion de Base de Datos","Las BBDDs se Normalizan con el proposito de:",["Evitar la redundancia de los datos.","Aunmentar los volumenes de datos de actualización de los datos en las tablas.","No tener integridad de los datos.","Realizacion de Actualización de datos sin integridad.",T,M],0,m(3)),
+k("Normalizacion de Base de Datos => Forma Normal","Primera Forma Normal:",["Toda Base de datos se encuentra por defecto en la Primera forma Normal.","Una BBDD se encuentra en 1FN si todo atributo contiene un valor indivisible o atomico (ausencia de grupos repetitivos).","Una BBDD se encuentra en 1FN si dada una clave primaria y cualquier campo que no sea un constituyente de la clave primaria.","Una BBDD se encuentra en 1FN si ningún atributo no clave depende de otro no clave (dependencia transitiva).",T,M],1,m(1)),
+k("Normalizacion de Base de Datos => Forma Normal","Segunda Forma Normal:",["Una BBDD se encuentra en 2FN si todo atributo contiene un valor indivisible o atomico (ausencia de grupos repetitivos).","Una BBDD se encuentra en 2FN si y solo si, esta en 1FN y dada una clave primaria y cualquier campo que no sea un constituyente de la clave primaria, el campo NO clave depende de toda la clave primaria y no solo de una parte.","Una BBDD se encuentra en 2FN si y solo si, esta en 1FN y Ningún atributo no clave depende de otro no clave (dependencia transitiva).",T,M],1,m(2,3)),
+k("Funciones","Funcion space:",["Retorna la cadena con todas las ocurrencias de la subcadena reemplazo por la subcadena a reemplazar.","Retorna una cadena de espacios de longitud indicada por “cantidad”, que debe ser un valor positivo.","Retorna la longitud de la cadena enviada como argumento.","Devuelve la posición de comienzo (de la primera ocurrencia) del patrón especificado en la cadena enviada como segundo argumento. Si no la encuentra retorna 0.",T,M],1,m(1)),
+k("Funciones","Funcion rtrim:",["Retornan la cadena con todos los caracteres en minúsculas.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la derecha, último caracter.","Retorna la cadena con los espacios de la derecha eliminados.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la izquierda, primer caracter.",T,M],2,m(2)),
+k("Funciones","Funcion lower:",["Retornan la cadena con todos los caracteres en minúsculas.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la derecha, último caracter.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la izquierda, primer caracter.","Retorna la cadena con los espacios de la izquierda eliminados.",T,M],0,m(3)),
+k("Funciones para manejo de STRING - CADENAS","Funcion PATINDEX:",["Devuelve la posición de un patrón en una cadena. Si no se encuentra el patrón, esta función devuelve 0.","Devuelve la posición de un patrón en una cadena. Si no se encuentra el patrón, esta función devuelve 1.","Devuelve la posición de la subcadena encontrada en la cadena buscada, o cero si no se encuentra la subcadena.","Busca una subcadena dentro de una cadena a partir de una ubicación especificada.",T,M],0,m(1,2)),
+k("Funciones para manejo de STRING - CADENAS","Funcion CHARINDEX:",["Devuelve una parte de la cadena especificada como primer argumento, empezando desde la posición especificada por el segundo argumento y de tantos caracteres de longitud como indica el tercer argumento.","Busca una subcadena dentro de una cadena a partir de una ubicación especificada.","Devuelve la posición de la subcadena encontrada en la cadena buscada, o el valor 1 si no se encuentra la subcadena.","La posición inicial devuelta se basa en 0, no en 1.",T,M],1,m(3)),
+k("Practica - VISTAS","Crear una vista llamada v_ClientesActivos que devuelva los ID_Cliente, Nombre y Estado de todos los clientes cuyo estado sea 'Activo' de la tabla Clientes.",["CREATE VIEW v_ClientesActivos AS SELECT ID_Cliente, Nombre, Estado FROM Clientes WHERE Estado = 'Activo';","CREATE VIEW v_ClientesActivos AS SELECT ID_Cliente, Nombre, Estado FROM Clientes WHERE Estado LIKE '%Activo%';","CREATE VIEW ClientesActivos AS SELECT ID_Cliente, Nombre, Estado FROM Clientes WHERE Estado = 'Activo';","CREATE VIEW v_ClientesActivos AS SELECT DISTINCT ID_Cliente, Nombre, Estado FROM Clientes WHERE Estado = 'Inactivo';"],0,m(1,3)),
+k("Practica - VISTAS","Se requiere crear una vista llamada v_EmpleadosDepartamentos que devuelva el ID_Empleado, Nombre_Empleado, y Nombre_Departamento de los empleados, uniendo las tablas Empleados y Departamentos en base al campo departamento_id. Renombrando el campo Nombre como Nombre_Empleado para mayor claridad.",["CREATE VIEW v_EmpleadosDepartamentos AS SELECT ID_Empleado, Nombre AS Nombre_Empleado, Nombre_Departamento FROM Empleados LEFT JOIN Departamentos ON Empleados.departamento_id = Departamentos.departamento_id;","CREATE VIEW v_EmpleadosDepartamentos AS SELECT ID_Empleado, Nombre AS Nombre_Empleado, Nombre_Departamento FROM Empleados JOIN Departamentos ON Empleados.departamento_id = Departamentos.departamento_id;","CREATE VIEW v_EmpleadosDepartamentos AS SELECT ID_Empleado, Nombre_Empleado, Nombre_Departamento FROM Empleados JOIN Departamentos ON Empleados.departamento_id = Departamentos.departamento_id;","CREATE VIEW v_EmpleadosDepartamentos AS SELECT DISTINCT ID_Empleado, Nombre_Empleado, Nombre_Departamento FROM Departamentos JOIN Empleados ON Departamentos.departamento_id = Empleados.departamento_id;"],1,m(2)),
+k("Practica - Creacion DBs - RESTRICCIONES","RESTRICCIONES: ¿Cuál de las siguientes afirmaciones es correcta sobre las restricciones de la tabla Empleados?",["La columna salario no permite valores nulos debido a la restricción CHECK.","La restricción PRIMARY KEY en la columna empleado_id asegura que este campo sea único y no nulo.","La restricción FOREIGN KEY asegura que el campo departamento_id en la tabla Empleados siempre tenga un valor.","La restricción CHECK en la columna salario permite que el salario tenga valores negativos."],1,m(1),`CREATE TABLE Empleados (
+  empleado_id INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  salario DECIMAL(10, 2),
+  departamento_id INT,
+  CONSTRAINT fk_departamento FOREIGN KEY (departamento_id) REFERENCES Departamentos(departamento_id),
+  CONSTRAINT chk_salario CHECK (salario >= 0)
+);`),
+k("Practica - Creacion DBs - RESTRICCIONES","RESTRICCIONES: ¿Cuál de las siguientes afirmaciones es falsa sobre las restricciones en la tabla Productos?",["La restricción PRIMARY KEY en la columna producto_id asegura que este campo sea único y no nulo.","La restricción CHECK en la columna precio permite valores de cero y positivos.","La restricción FOREIGN KEY en categoria_id garantiza que cada producto pertenezca a una categoría existente.","La columna nombre no permite valores nulos debido a la restricción NOT NULL."],1,m(2),`CREATE TABLE Productos (
+  producto_id INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  precio DECIMAL(10, 2),
+  stock INT,
+  categoria_id INT,
+  CONSTRAINT fk_categoria FOREIGN KEY (categoria_id) REFERENCES Categorias(categoria_id),
+  CONSTRAINT chk_precio CHECK (precio > 0)
+);`),
+k("Practica - Creacion DBs - RESTRICCIONES","RESTRICCIONES: ¿Cuál de las siguientes afirmaciones sobre las restricciones en la tabla Empleados es incorrecta?",["La columna salario permite solo valores entre 1000 y 50000 gracias a la restricción CHECK.","La columna fecha_contratacion no puede tener valores nulos debido a la restricción NOT NULL.","La restricción FOREIGN KEY en la columna departamento_id asegura que los empleados pertenezcan a un departamento válido.","La columna nombre no puede aceptar valores nulos debido a la restricción NOT NULL.",T,M],4,m(3),`CREATE TABLE Empleados (
+  empleado_id INT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL,
+  salario DECIMAL(10, 2) CHECK (salario >= 1000 AND salario <= 50000),
+  fecha_contratacion DATE NOT NULL,
+  departamento_id INT,
+  CONSTRAINT fk_departamento FOREIGN KEY (departamento_id) REFERENCES Departamentos(departamento_id)
+);`),
+k("Funciones - Teoria","Que es una funcion ?",["Es un conjunto de Relaciones entre Tablas que operan como una unidad lógica.","No tiene un nombre ya que es invocada por el acceso a la tabla de referencia, retorna un valor de salida y opcionalmente acepta parámetros de entrada.","Las funciones de SQL Server pueden ser modificadas como tambien las funciones definidas por el usuario si.","Permiten realizar operaciones específicas sobre las relaciones de las tablas.",T,M],5,m(1,3)),
+k("Funciones - Teoria","Que es una funcion ?",["Es un conjunto de sentencias que operan como una unidad lógica.","No tiene un nombre ya que es invocada por el acceso a la tabla de referencia, retorna un valor de salida y opcionalmente acepta parámetros de entrada.","Las funciones de SQL Server pueden ser modificadas como tambien las funciones definidas por el usuario si.","Permiten realizar operaciones específicas sobre las relaciones de las tablas.",T,M],0,m(2)),
+k("Teoria - BBDD - Indices","Los Indices:",["La desventaja es que consume espacio en disco y genera costo de mantenimiento (tiempo y recursos).","Los índices más adecuados son aquellos creados con campos que contienen valores únicos.","Es importante crear un índice, con campos por los cuales se realizan búsqueda con frecuencia: claves primarias, claves externas o campos que combinan tablas.","No se recomienda crear índices por campos que no se usan con frecuencia en consultas o no contienen valores únicos.",T,M],4,m(1)),
+k("Teoria - BBDD - Indices","Los Indices:",[IXQ,IXV,IXS,"Mejora el rendimiento acelerando las consultas y otras operaciones.",T,M],3,m(2)),
+k("Teoria - BBDD - Indices","Los Indices:",["Posibilita el acceso directo y rápido haciendo más eficiente las búsquedas.",IXQ,IXV,IXS,T,M],0,m(3)),
+k("Teoria - BBDD - Indices - AGRUPADO - CLUSTER","Los Indices: AGRUPADO - CLUSTER",[CL1,"El tamaño medio de un índice agrupado es aproximadamente el 10% del tamaño de la tabla mas grande de la Base.",CL3,"Los datos en la tabla se almacenan en el disco en el mismo orden que el índice.",T,M],3,m(1)),
+k("Teoria - BBDD - Indices - AGRUPADO - CLUSTER","Los Indices: AGRUPADO - CLUSTER",[CL1,"El tamaño medio de un índice agrupado es aproximadamente el 5% del tamaño de la tabla.",CL3,"Los datos en la tabla se almacenan en el disco en el orden estrictamente inverso que el índice.",T,M],1,m(2,3)),
+k("Teoria - BBDD - Indices - NOAGRUPADO - NOCLUSTER","Los Indices: NO AGRUPADO - NO CLUSTER",["Los datos se almacenan en un lugar diferente al del índice.","Los punteros indican el lugar del disco donde los elementos indizados se almacenan junto con el índice.","Se emplea únicamente cuando los campos contienen datos únicos y no se repiten.","Una tabla puede tener menos de 256 índices no agrupados.",T,M],0,m(1)),
+k("Teoria - BBDD - Indices - NOAGRUPADO - NOCLUSTER","Los Indices: NO AGRUPADO - NO CLUSTER",["Los datos se almacenan en el mismo lugar al del índice.","Los punteros indican el lugar del disco donde los elementos indizados hacen referencia a las tabla de la Base.",NC3,"Una tabla puede tener hasta 256 índices no agrupados.",T,M],2,m(2)),
+k("Teoria - BBDD - Indices - NOAGRUPADO - NOCLUSTER","Los Indices: NO AGRUPADO - NO CLUSTER",["Los datos se almacenan en un lugar diferente al del índice.","Los punteros no indican el lugar de almacenamiento de los elementos indizados en la tabla.",NC3,"Una tabla puede tener hasta 249 índices no agrupados.",T,M],0,m(3)),
+k("Practica - Combinaciones entre tablas","¿Cuál de las siguientes consultas SQL devuelve correctamente los nombres de los empleados y el nombre de sus departamentos? "+CE+"Empleados: ID_Empleado (INT, PRIMARY KEY) Nombre_Empleado (VARCHAR) Departamentos: ID_Departamento (INT, PRIMARY KEY) Nombre_Departamento (VARCHAR) Asignaciones: ID_Empleado (INT, FOREIGN KEY referenciando Empleados) ID_Departamento (INT, FOREIGN KEY referenciando Departamentos)",["SELECT e.Nombre_Empleado, d.Nombre_Departamento FROM Empleados e JOIN Departamentos d ON e.ID_Empleado = d.ID_Departamento;","SELECT e.Nombre_Empleado, d.Nombre_Departamento FROM Empleados e INNER JOIN Asignaciones a ON e.ID_Empleado = a.ID_Empleado INNER JOIN Departamentos d ON a.ID_Departamento = d.ID_Departamento;","SELECT Nombre_Empleado, Nombre_Departamento FROM Asignaciones a JOIN Empleados e ON a.ID_Departamento = e.ID_Empleado JOIN Departamentos d ON a.ID_Empleado = d.ID_Departamento;","SELECT c.Nombre_Cliente, p.Fecha_Pedido FROM Clientes c INNER JOIN Pedidos p ON c.ID_Cliente = p.ID_Pedido;"],1,m(1)),
+k("Practica - Combinaciones entre tablas","¿Cuál de las siguientes consultas SQL devuelve correctamente los nombres de los estudiantes y el nombre de los cursos en los que están inscritos? "+CE+"Estudiantes: ID_Estudiante (INT, PRIMARY KEY) Nombre_Estudiante (VARCHAR) Cursos: ID_Curso (INT, PRIMARY KEY) Nombre_Curso (VARCHAR) Inscripciones: ID_Estudiante (INT, FOREIGN KEY referenciando Estudiantes) ID_Curso (INT, FOREIGN KEY referenciando Cursos)",["SELECT e.Nombre_Estudiante, c.Nombre_Curso FROM Estudiantes e JOIN Inscripciones i ON e.ID_Estudiante = i.ID_Curso JOIN Cursos c ON i.ID_Estudiante = c.ID_Curso;","SELECT e.Nombre_Estudiante, c.Nombre_Curso FROM Estudiantes e JOIN Cursos c ON e.ID_Estudiante = c.ID_Curso;","SELECT e.Nombre_Estudiante, c.Nombre_Curso FROM Estudiantes e INNER JOIN Inscripciones i ON e.ID_Estudiante = i.ID_Estudiante INNER JOIN Cursos c ON i.ID_Curso = c.ID_Curso;","SELECT Nombre_Estudiante, Nombre_Curso FROM Inscripciones i JOIN Estudiantes e ON i.ID_Curso = e.ID_Estudiante JOIN Cursos c ON i.ID_Estudiante = c.ID_Curso;"],2,m(2)),
+k("Practica - Combinaciones entre tablas","Se tienen las siguientes tablas. ¿Cuál de las siguientes consultas SQL devuelve correctamente los nombres de los clientes y las fechas de sus pedidos? Clientes: ID_Cliente (INT, PRIMARY KEY) Nombre (VARCHAR) Pedidos: ID_Pedido (INT, PRIMARY KEY) ID_Cliente (INT, FOREIGN KEY referenciando Clientes) Fecha_Pedido (DATE)",["SELECT Nombre, Fecha_Pedido FROM Clientes INNER JOIN Pedidos ON Clientes.ID_Cliente = Pedidos.ID_Pedido;","SELECT Clientes.Nombre, Pedidos.Fecha_Pedido FROM Clientes INNER JOIN Pedidos ON Clientes.ID_Cliente = Pedidos.ID_Cliente;","SELECT c.Nombre, p.Fecha_Pedido FROM Clientes c JOIN Pedidos p ON c.ID_Cliente = p.ID_Pedido;","SELECT c.Nombre, p.Fecha_Pedido FROM Clientes c LEFT JOIN Pedidos p ON c.ID_Cliente = p.ID_Cliente;"],1,m(3)),
+k("Practica - SQL Inversa","En base a la consulta SQL, determinar que enunciado dio origen a la consulta siguiente:",["Seleccionar todas las solicitudes realizadas en cualquier horario que tienen acceso a ambientes con la descripción 'Desarrollo'.","Obtener la cantidad de solicitudes realizadas entre las 00:00 y las 04:00 de cada fecha, excluyendo aquellas direcciones IP que tienen acceso a ambientes con la descripción 'Desarrollo', y mostrando solo las fechas con 10 o más solicitudes.","Contar todas las solicitudes realizadas entre las 00:00 y las 04:00 de cualquier fecha, sin importar la descripción del ambiente.","Obtener el número total de solicitudes realizadas durante todo el día que están asociadas con ambientes de 'Desarrollo'."],1,m(1),SCH+`Select Fecha, count(*)
+From Request R
+Where hora between '00:00' and '04:00'
+and not exists(select 1 from Page P
+inner join Ambiente A on P.IDAmbiente = A.ID
+where R.IP=P.IP A.Descripcion='Desarrollo'
+)
+Group by fecha
+Having count(*) >= 10`),
+k("Practica - SQL Inversa","En base a la consulta SQL, determinar que enunciado dio origen a la consulta siguiente:",["Da la cantidad del número de fechas distintas, el número de métodos distintos utilizados, y la fecha más reciente de solicitudes realizadas por cada dirección IP en la tabla Page que tiene coincidencias en la tabla Request.","Obtener el número de dias similares, el número de métodos distintos utilizados, y la fecha más reciente de solicitudes realizadas por cada dirección IP en la tabla Page que tiene coincidencias en la tabla Request.","Obtener la lista de todas las solicitudes realizadas por cada dirección IP, incluyendo la fecha de cada solicitud y el tipo de método utilizado.","Extraer la dirección IP y la lista completa de fechas y métodos utilizados en cada solicitud para cada dirección IP."],0,m(2),SCH+`Select P.IP, count(distinct fecha),
+       count(distinct IDMetodo),
+       max(fecha)
+From Page P
+Inner join Request R on P.IP=R.IP
+Group by P.IP`),
+k("Practica - SQL Inversa","En base a la consulta SQL, determinar que enunciado dio origen a la consulta siguiente:",["Obtener la lista de páginas web que comienzan con 'www', junto con la descripción del ambiente y la fecha más reciente de solicitudes, para aquellas páginas que han recibido al menos 7 solicitudes distintas en los últimos 7 días.","Seleccionar todas las páginas web y sus descripciones, junto con el total de solicitudes realizadas en el último mes.","Obtener el conteo total de todas las solicitudes realizadas para cada página web, sin importar el ambiente ni el periodo de tiempo","Seleccionar las páginas web que no tienen solicitudes en los últimos 7 días y mostrar sus descripciones."],0,m(3),`[En la captura faltan las primeras líneas del esquema]
+Metodo (ID, Clase, Metodo)
+Ambiente (ID, Descripcion)
+
+Select W.WebPage, A.Descripcion, max(R.fecha), 'S'
+From Request R
+Inner join WebPage W on R.IP=W.IP
+Inner join Ambiente A on A.id=W.IDAmbiente
+Where R.Fecha>=date()-7 and W.Webpage like 'www%'
+Group by W.WebPage, A.Descripcion
+Having count(distinct fecha)>=7`),
+k("Teoria - BBDD - Vistas","Vista:",["Los datos accesibles a través de la vista no están almacenados en la base de datos como un objeto.","Almacena una consulta como un objeto para utilizarse posteriormente.","Las tablas consultadas en una vista se llaman tablas base.","Se puede dar un nombre a cualquier consulta y almacenarla como una vista.",T,N],4,m(1)),
+k("Teoria - BBDD - Vistas","Vista:",[VW1,VW2,VW3,"No es necesario concederle permisos para acceder a ciertos campos, así se protegen las tablas base de cambios en su estructura.",T,N],3,m(2)),
+k("Teoria - BBDD - Vistas","Vista:",[VW1,VW2,VW3,"Es necesario concederle permisos para acceder a ciertos campos, así se protegen las tablas base de cambios en su estructura.",T,N],5,m(3)),
+];
+const R5=["Parcial 29/5 (19:46)","Parcial 29/5 (19:57)","Parcial 2/10"];
+const p5=(...n)=>(n.length>1?"Aparece en: ":"Origen: ")+n.map(x=>R5[x-1]).join(", ")+" · "+[...new Set(n.map(x=>x===3?"2C 2025":"1C 2025"))].join(" y ");
+const kw=(w,x)=>Object.assign(x,{w});
+const RQ="¿Cuál es el resultado de ejecutar la siguiente consulta?",RQ2="¿Cuál es el resultado de ejecutar la siguiente consulta en SQL?";
+const PR="producto_id (tipo INT, clave primaria)\nnombre (tipo VARCHAR(100), no nulo)\nprecio (tipo DECIMAL(10,2), no nulo)";
+const B3="Una BBDD se encuentra en 3FN si y solo si, esta en ";
+const VA="CREATE VIEW v_EmpleadosAntiguos AS SELECT ID_Empleado, Nombre_Empleado, Fecha_Contratacion FROM Empleados WHERE Fecha_Contratacion ";
+const VB="CREATE VIEW v_InventarioBajo AS SELECT ID_Producto, Nombre_Producto, Cantidad_Disponible FROM Productos WHERE Cantidad_Disponible ";
+const VC="CREATE VIEW v_VentasMensuales AS SELECT ID_Venta, Fecha_Venta, Monto_Total FROM Ventas WHERE ";
+const CT="( producto_id INT PRIMARY KEY, nombre VARCHAR(100) NOT NULL, precio DECIMAL(10,2) NOT NULL);";
+const IQ="Existe una tabla llamada Clientes que contiene millones de registros, y frecuentemente ejecutas consultas que filtran por la columna Email. Quieres mejorar el rendimiento de estas consultas. ¿Cuál de las siguientes sentencias es la mejor opción para crear un índice que mejore las consultas por la columna Email?";
+const SQA="Obtener el número de fechas distintas, el número de métodos distintos utilizados, y la fecha más reciente de solicitudes realizadas por cada dirección IP en la tabla Page que tiene coincidencias en la tabla Request.";
+Q.push(
+k("Normalizacion de Base de Datos => Forma Normal","Tercera Forma Normal:",[B3+"2FN y se debe eliminar cualquier dependencia transitoria.",B3+"2FN y ningún atributo no clave debe depender de otro atributo no clave.",B3+"2FN y ningún atributo no clave depende de otro no clave (dependencia transitiva).",B3+"2FN y todos los atributos no clave deben depender únicamente de la clave primaria.",T,M],4,p5(1)),
+k("Normalizacion de Base de Datos => Forma Normal","Tercera Forma Normal:",["Una BBDD se encuentra en 3FN si todo atributo contiene un valor indivisible o atomico (ausencia de grupos repetitivos).",B3+"2FN y dada una clave primaria y cualquier campo que no sea un constituyente de la clave primaria, el campo NO clave depende de toda la clave primaria y no solo de una parte.",B3+"2FN y Ningún atributo no clave depende de otro no clave (dependencia transitiva).",B3+"1FN y Ningún atributo no clave depende de otro no clave (dependencia transitiva).",T,M],2,p5(2)),
+k("Funciones","Funcion lower:",["Retornan la cadena con todos los caracteres en mayúsculas.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la derecha, último caracter.","Retorna la cantidad (longitud) de caracteres de la cadena comenzando desde la izquierda, primer caracter.","Retorna la cadena con los espacios de la izquierda eliminados.",T,M],5,p5(1)),
+k("Funciones","Funcion de Agregado:",["Operan sobre un conjunto de valores y devuelven un único valor como resultado de una consulta.","Operan sobre un conjunto de valores y devuelven mas de 1 valor.","Devuelven un solo valor (por ejemplo, LEN(), GETDATE(), UPPER()).","Se utilizan para calcular valores individuales.",T,M],0,p5(2)),
+k("Funciones para manejo de STRING - CADENAS","Funcion SUBSTRING:",["Devuelve una parte de la cadena especificada como primer argumento, empezando desde la posición especificada por el segundo argumento y de tantos caracteres de longitud como indica el tercer argumento.","Busca una subcadena dentro de una cadena a partir de una ubicación especificada.","Devuelve la posición de la subcadena encontrada en la cadena buscada, o cero si no se encuentra la subcadena.","Devuelve la posición de un patrón en una cadena. Si no se encuentra el patrón, esta función devuelve 0.",T,M],0,p5(2)),
+k("Funciones - Teoria","Que es una funcion ?",["Es un conjunto de Relaciones entre Tablas que operan como una unidad lógica.","Tiene un nombre, retorna un valor de salida y opcionalmente acepta parámetros de entrada.","Las funciones de SQL Server pueden ser modificadas como tambien las funciones definidas por el usuario si.","Permiten realizar operaciones específicas sobre las relaciones de las tablas.",T,M],1,p5(2,3)),
+k("Teoria - BBDD - Funciones de Agregado","Funcion MIN: Con el uso de la funcion MIN (campoX)",["Obtiene el mínimo valor del contenido que posee ese campo en la tabla consultada.","Obtiene el mínimo valor del contenido alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.","Obtiene el mínimo valor del contenido numerico y alfabetico (usando el valor ASCII) que posee ese campo en la tabla consultada.","Obtiene el mínimo valor del contenido numerico que posee ese campo en la tabla consultada.",T,N],3,p5(3)),
+kw("Las opciones a) y c) dicen lo mismo; la corrección del parcial marca a).",k("Teoria - BBDD - Funcion JOIN","Funcion CROSS JOIN",["Devuelve el producto cartesiano de las dos tablas.","Si no hay coincidencia en la tabla de la derecha, las columnas correspondientes de la tabla derecha contendrán valores NULL.","Devuelve el producto cartesiano de las dos tablas, es decir, combina cada fila de la primera tabla con todas las filas de la segunda tabla.","Es simplemente un JOIN donde una tabla se une consigo misma.",T,N],0,p5(3))),
+k("Programación en SQL Server","TRANSACT-SQL",[TS0,"Es un lenguaje OpenSource, pero basado en el lenguaje SQL estándar (ANSI SQL).",TS,"Incluye todas las características de SQL estándar, pero añade elementos adicionales que mejoran la funcionalidad y flexibilidad del lenguaje.","Mas de una respuesta es correcta.",T,M],3,p5(2)),
+k("Programación en SQL Server","TRANSACT-SQL",["Es el lenguaje de programación que se emplea para mandar peticiones entre el cliente y el servidor.","Es un lenguaje OpenSource, pero basado en el lenguaje SQL estándar (ANSI SQL).",TS,TS2,"Mas de una respuesta es correcta.",T,M],0,p5(3)),
+k("Diagrama de Entidad Relacion => Restricciones de Tablas","RESTRICCIONES DE TABLAS:",["Los nombres de las tablas pueden no ser únicos en la base de datos.",E4,"Puede haber dos registros con el mismo valor de la clave primaria.","Dentro de las restricciones que podemos establecer desde el diseño de los campos: Que admita valores Nulos, y no admita valores duplicados.",T,M],1,p5(2)),
+k("Practica - VISTAS","Crear una vista llamada v_EmpleadosAntiguos que devuelva el ID_Empleado, Nombre_Empleado, y Fecha_Contratacion de todos los empleados que fueron contratados antes del 1 de enero de 2015. La tabla Empleados tiene las columnas ID_Empleado, Nombre_Empleado, y Fecha_Contratacion.",[VA+"<= '2015-01-01';",VA+"> '2015-01-01';",VA+"< '2015-01-01';","CREATE VIEW v_EmpleadosAntiguos AS SELECT DISTINCT ID_Empleado, Nombre_Empleado, Fecha_Contratacion FROM Empleados WHERE Fecha_Contratacion = '2015-01-01';"],2,p5(1)),
+k("Practica - VISTAS","Crear una vista llamada v_InventarioBajo que devuelva el ID_Producto, Nombre_Producto, y Cantidad_Disponible de todos los productos cuya cantidad sea menor a 10 en la tabla Productos. La tabla contiene las columnas ID_Producto, Nombre_Producto, y Cantidad_Disponible.",[VB+"<= 10;",VB+"< 10;",VB+"= 10;",VB+"> 10;"],1,p5(2)),
+k("Practica - VISTAS","Crear una vista llamada v_VentasMensuales que devuelva el ID_Venta, Fecha_Venta, y Monto_Total de todas las ventas realizadas en el mes de enero del año 2024. La tabla se llama Ventas y contiene las columnas ID_Venta, Fecha_Venta, y Monto_Total.",[VC+"Fecha_Venta >= '2024-01-01' AND Fecha_Venta <= '2024-01-31';",VC+"Fecha_Venta LIKE '01%2024';",VC+"Fecha_Venta BETWEEN '2024-01-01' AND '2024-01-31';",VC+"MONTH(Fecha_Venta) = 1 AND YEAR(Fecha_Venta) = 2024;"],3,p5(3)),
+k("Practica - Creacion DBs","Dentro de la base de datos Facturación, el esquema Compras y la tabla Producto. Altera la tabla Producto para agregar una restricción que asegure que el precio sea mayor a 50.",["ALTER TABLE Compras.Producto ADD CONSTRAINT CHK_Precio CHECK (precio > 50);","ALTER TABLE Producto ADD CONSTRAINT CHK_Precio CHECK (precio >= 50);","ALTER TABLE Facturación.Compras.Producto ADD CHECK (precio > 50);","USE Facturación; ALTER TABLE Compras.Producto ADD CONSTRAINT CHK_Precio CHECK (precio >= 50);"],0,p5(1),"Producto\n"+PR),
+k("Practica - Creacion DBs","Dentro de la base de datos llamada Facturación y el esquema Compras, genera las sentencias correctas para crear una tabla llamada Producto con las siguientes columnas:",["CREATE TABLE Facturación.Compras.Producto "+CT,"USE Compras; CREATE TABLE Producto "+CT,"CREATE TABLE Compras.Producto "+CT,"USE Facturación; CREATE TABLE Compras.Producto "+CT],3,p5(2),PR),
+k("Practica - Creacion DBs","Dado el siguiente requerimiento, crear la base de datos y su esquema: La base de datos debe llamarse Facturación. El esquema dentro de la base de datos debe llamarse Compras.",["CREATE SCHEMA Compras; CREATE DATABASE Facturación;","CREATE DATABASE Facturación; CREATE SCHEMA Compras;","CREATE DATABASE Facturación; USE Facturación; CREATE SCHEMA Compras;","USE Facturación; CREATE SCHEMA Compras; CREATE DATABASE Facturación;"],2,p5(3)),
+k("Practica Funciones",RQ2,["ABC","ABC123","Error: Longitud excedida","ABC12"],3,p5(2,3),"DECLARE @cadena1 varchar(4), @cadena2 varchar(3);\nSET @cadena1 = 'ABC';\nSET @cadena2 = '12';\nSELECT @cadena1 + @cadena2;"),
+k("Practica Funciones - CHARINDEX",RQ2,["posicion = 0","no devuelve valor CHARINDEX es sensible a mayúsculas y minúsculas.","posicion = 21","posicion = 15"],2,p5(1,2),"SELECT CHARINDEX('sql', 'Primer cuatrimestre SQL Server') position;"),
+k("Practica Funciones - CHARINDEX",RQ2,["posicion = 0","no devuelve valor CHARINDEX es sensible a mayúsculas y minúsculas.","posicion = 1","posicion = 15"],3,p5(3),"SELECT CHARINDEX('sql', 'Bienvenidos a SQL Server') position;"),
+kw("En el parcial del 2/10 (2C 2025) la corrección marca «world», pero con SUBSTRING('Hello, world!', 7, 5) el resultado es « worl» (empieza en el espacio, posición 7, y toma 5 caracteres). Los otros dos modelos marcan «worl».",k("Practica Funciones - SUBSTRING",RQ,["worl","Hello","world",", wor"],0,p5(1,2,3),"SELECT SUBSTRING('Hello, world!', 7, 5)")),
+k("Practica Funciones - LOWER",RQ,["hello, world!","Hello, World!","HELLO, WORLD!","hELLO, wORLD!"],0,p5(1,2,3),"SELECT LOWER('HELLO, World!')"),
+k("Practica Funciones - UPPER",RQ,["resultado = hola estudiante","resultado = hola estudiaNTE","resultado = HOLA ESTUDIAnte","resultado = HOLA ESTUDIANTE"],3,p5(1,3),"select upper('HOLA ESTUDIAnte') as resultado;"),
+k("Practica Funciones - UPPER",RQ,["resultado = resultado ventas anual","resultado = rESULTADO vENTAS aNUAL","resultado = Resultado Ventas Anual","resultado = RESULTADO VENTAS ANUAL"],3,p5(2),"select upper('Resultado Ventas Anual') as resultado;"),
+k("Practica Funciones - REPLACE",RQ,["resultado = www.unsam","resultado = .edu.ar","resultado = www.unlam.edu.ar","resultado = www.unsam.edu.ar"],2,p5(1,2),"select replace('www.unsam.edu.ar','unsam','unlam') as resultado;"),
+k("Practica Funciones - REPLACE",RQ,["Hello,!","Hello, world!","SQL, world!","Hello, SQLd!"],0,p5(3),"SELECT REPLACE ('Hello,!', 'world', 'SQL')"),
+k("Practica Funciones - right",RQ,["resultado = Bienvenidos a SQ","resultado = L Server","resultado = Bienveni","resultado = Bienvenidos"],1,p5(1,2,3),"select right('Bienvenidos a SQL Server',8)as resultado;"),
+k("Practica Funciones - left",RQ,["resultado = Bienvenidos a","resultado = Bienveni","resultado = L Server","resultado = Bienvenidos"],1,p5(1),"select left('Bienvenidos a SQL Server',8) as resultado;"),
+k("Practica Funciones - left",RQ,["resultado = Bienvenidos,","resultado = Bienveni","esultado = diantes!","resultado = Bienvenidos"],1,p5(2,3),"select left('Bienvenidos, estudiantes!',8) as resultado;"),
+k("Practica - Creacion DBs - RESTRICCIONES","RESTRICCIONES: ¿Cuál de las siguientes afirmaciones es falsa?",["La columna nombre no puede contener valores nulos debido a la restricción NOT NULL.","La restricción CHECK en la columna precio asegura que no se puedan ingresar valores negativos.","La columna stock solo acepta valores mayores o iguales a cero gracias a la restricción CHECK.","La columna categoria_id puede aceptar valores nulos, ya que es una clave foránea (FOREIGN KEY)."],3,p5(1),`CREATE TABLE Productos (
+  producto_id INT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  precio DECIMAL(10, 2) CHECK (precio > 0),
+  stock INT CHECK (stock >= 0),
+  categoria_id INT NOT NULL,
+  CONSTRAINT fk_categoria FOREIGN KEY (categoria_id) REFERENCES Categorias(categoria_id)
+);`),
+k("Practica - Creacion DBs - RESTRICCIONES","RESTRICCIONES: ¿Cuál de las siguientes afirmaciones sobre las restricciones en la tabla Empleados es incorrecta?",["La columna salario permite solo valores entre 1000 y 50000 gracias a la restricción CHECK.","La columna fecha_contratacion no puede tener valores nulos debido a la restricción NOT NULL.","La restricción FOREIGN KEY en la columna departamento_id asegura que los empleados pertenezcan a un departamento válido.","La columna nombre puede aceptar valores nulos si el campo es opcional."],3,p5(2),Q[56].c),
+k("Practica - Indices",IQ,["CREATE INDEX idx_email ON Clientes (Email);","CREATE INDEX idx_email ON Clientes (Email DESC);","CREATE UNIQUE INDEX idx_email ON Clientes (Email);","CREATE INDEX idx_cliente_email ON Clientes (cliente_id, Email);"],0,p5(1,2,3)),
+k("Teoria - BBDD - Indices","Los Indices:",["La Ventaja es que consume espacio en disco y pero no genera costo de mantenimiento (tiempo y recursos).","Los índices más adecuados son aquellos creados con campos que contienen valores duplicados.","Es importante crear un índice, con campos por los cuales se realizan búsqueda con poca frecuencia.","Recorriendo las tablas; comenzando por el valor del indice mas grande y extrayendo los registros que cumplan las condiciones de la consulta.",T,M],5,p5(1)),
+k("Teoria - BBDD - Indices","Los Indices:",["Facilitan la obtención de información de un atributo.",IXQ,"Sin índice, SQL Server debe recorrer secuencialmente toda la tabla para encontrar un registro.",IXS,T,M],2,p5(2)),
+k("Teoria - BBDD - Indices - AGRUPADO - CLUSTER","Los Indices: AGRUPADO - CLUSTER",["Los registros con el mismo valor de campo se agrupan juntos.","El tamaño medio de un índice agrupado es aproximadamente el 5% del tamaño de la tabla.","Un índice clustered define el orden físico de los datos en la tabla.","Los datos en la tabla se almacenan en el disco en el mismo orden que el índice.",T,M],4,p5(2,3)),
+k("Teoria - BBDD - Indices - NOAGRUPADO - NOCLUSTER","Los Indices: NO AGRUPADO - NO CLUSTER",["Los datos se almacenan en un lugar diferente al del índice.","Los punteros indican el lugar del disco donde los elementos indizados hacen referencia a las tabla de la Base.","Se emplea cuando se realizan el mismo tipos de búsquedas de forma frecuentemente, con campos en los que los datos no son únicos.","Una tabla puede tener hasta 256 índices no agrupados.",T,M],0,p5(2)),
+k("Teoria - BBDD - Indices - NOAGRUPADO - NOCLUSTER","Los Indices: NO AGRUPADO - NO CLUSTER",["Los datos se almacenan en un lugar diferente al del índice.","Los punteros indican el lugar de almacenamiento de los elementos indizados en la tabla.",NC3,"Una tabla puede tener hasta 249 índices no agrupados.",T,M],4,p5(3)),
+k("Practica - Combinaciones entre tablas","¿Qué devuelve la siguiente consulta SQL?",["Devuelve los primeros 3 empleados con el salario más bajo.","Devuelve todos los empleados con el salario más alto.","Devuelve los 3 empleados con el salario más alto.","Devuelve los empleados con el salario más alto, sin limitar el número de resultados."],2,p5(2),"SELECT TOP 3 nombre, salario\nFROM Empleados\nORDER BY salario DESC;"),
+k("Practica - Combinaciones entre tablas","¿Qué resultado devuelve la siguiente consulta SQL?",["Devuelve todas las ciudades, incluyendo los duplicados.","Devuelve las ciudades únicas, eliminando los duplicados.","Devuelve todas las ciudades que aparecen más de una vez en la tabla.","Devuelve solo las ciudades que están asociadas con más de un cliente."],1,p5(3),"SELECT DISTINCT ciudad\nFROM Clientes;"),
+kw("Las opciones a) y b) son casi iguales; la corrección del parcial marca b).",k("Practica - SQL Inversa","En base a la consulta SQL, determinar que enunciado dio origen a la consulta siguiente:",["Da la cantidad del número de fechas distintas, el número de métodos distintos utilizados, y la fecha más reciente de solicitudes realizadas por cada dirección IP en la tabla Page que tiene coincidencias en la tabla Request.",SQA,"Obtener la lista de todas las solicitudes realizadas por cada dirección IP, incluyendo la fecha de cada solicitud y el tipo de método utilizado.","Extraer la dirección IP y la lista completa de fechas y métodos utilizados en cada solicitud para cada dirección IP."],1,p5(1),SCH+"Select P.IP, count(distinct fecha),\n       count(distinct IDMetodo),\n       max(fecha)\nFrom Page P\nInner join Request R on P.IP=R.IP\nGroup by P.IP")),
+k("Practica - SQL Inversa","En base a la consulta SQL, determinar que enunciado dio origen a la consulta siguiente:",["Seleccionar todos los registros de la tabla Ambiente que han recibido solicitudes en los últimos 7 días.","Obtener todos los registros de la tabla Ambiente que tienen solicitudes asociadas independientemente de la fecha.","Obtener todos los registros de la tabla Ambiente que no están asociados con ningún ambiente en el que no haya recibido solicitudes en los últimos 7 días.","Seleccionar todos los registros de la tabla Ambiente que tienen al menos una solicitud en el último mes."],2,p5(3),"[La captura no muestra el esquema]\n\nSelect *\nFrom Ambiente A\nWhere id not in (Select idambiente\nFrom Page P\nWhere not exists (Select 1\nFrom Request R\nWhere R.IP=P.IP and fecha>= date()-7\n)\n)"),
+k("Teoria - BBDD - Vistas","Vista:",["Permiten el acceso a algunos datos y manteniendo oculto el resto de la información que no se incluye en la vista.","Permiten operar con los datos de una vista como si se tratara de una tabla, pudiendo modificar tales datos.","Se pueden dar al usuario permisos para que solamente pueda acceder a los datos a través de vistas.","No es necesario concederle permisos para acceder a ciertos campos, así se protegen las tablas base de cambios en su estructura.",T,N],4,p5(1)),
+k("Teoria - BBDD - Vistas","Vista:",[VW1,"Permiten operar con los datos de una vista como si se tratara de una tabla, pudiendo modificar tales datos.",VW3,"Es necesario concederle permisos para acceder a ciertos campos, así se protegen las tablas base de cambios en su estructura.",T,N],1,p5(2)),
+k("Teoria - BBDD - Vistas","Vista:",["Es una consulta que se presenta como una tabla (virtual) a partir de un conjunto de tablas en una base de datos relacional.","Tienen la misma estructura que una tabla: filas y columnas.","Almacena de las tablas la definición, no los datos.","Es una estructura permanente en la base de datos que almacena una consulta.",T,N],4,p5(3))
+);
+[[0,[1,2]],[1,[3]],[6,[3]],[7,[3]],[12,[1]],[14,[2]],[18,[1]],[19,[3]],[22,[1,3]],[23,[2]],[35,[1]],[42,[2]],[51,[1,3]],[55,[3]],[59,[3]],[63,[1]],[69,[1]],[70,[2]]].forEach(([i,a])=>{Q[i].s+=" · También en 2025: "+a.map(x=>R5[x-1]).join(", ")+(i===35?" (con las opciones en otro orden)":"")});
+Q.push(
+k("Teoria - BBDD - Funcion UPDATE - Restricciones","Sentencia UPDATE => Restricciones de Integridad de Datos:",["Claves Primarias: Puedes actualizar una clave primaria de manera que se convierta en un valor duplicado.","Claves Foráneas: Los valores actualizados en una columna de clave foránea no deben seguir existiendo en la tabla referenciada, a menos que se actualicen las referencias en las tablas relacionadas.","Restricciones de Unicidad: Debes actualizar valores en una columna que tengan una restricción de unicidad a fin de que se conviertan en valores duplicados.","Restricciones de Verificación: Los nuevos valores no deben cumplir con las condiciones definidas en las restricciones de verificación.",DW,N],5,p5(1)),
+k("Teoria - BBDD - Funcion UPDATE - Restricciones","Sentencia UPDATE => Restricciones de Integridad de Datos:",["Restricciones de Vista: Si estás actualizando datos a través de una vista, la vista debe ser actualizable. Algunas vistas, especialmente aquellas que involucran uniones complejas o agregaciones, pueden no ser actualizables directamente.","Restricciones de Concurrencia: SQL Server aplica bloqueos para manejar la concurrencia y mantener la integridad de los datos durante las actualizaciones. Los bloqueos pueden afectar el rendimiento y la accesibilidad de los datos durante la operación de actualización.","Restricciones de Identidad: No puedes actualizar una columna de identidad (IDENTITY), ya que su valor es generado automáticamente por el sistema.","Restricciones de Particionamiento: Si la tabla está particionada, cualquier actualización debe cumplir con las reglas de particionamiento definidas para que los datos permanezcan en la partición correcta.",DW,N],4,p5(2,3)),
+k("Teoria - BBDD - Funcion DELETE - Restricciones","Sentencia DELETE => Restricciones de Datos:",["Restricciones de Transacciones: Las operaciones de DELETE se pueden agrupar en transacciones. Si una transacción falla, SQL Server puede revertir todas las eliminaciones realizadas durante esa transacción, manteniendo la integridad de la base de datos.","Restricciones de Vista: Si intentas eliminar filas a través de una vista, la vista debe ser actualizable. Algunas vistas, especialmente aquellas que involucran uniones complejas, agregaciones o agregaciones de datos, pueden no ser actualizables directamente.","Restricciones de Concurrencia: SQL Server utiliza bloqueos para manejar la concurrencia durante la operación de DELETE. Estos bloqueos pueden afectar el rendimiento y la accesibilidad de los datos durante la eliminación.","Restricciones de Filtros: Asegúrate de usar la cláusula WHERE correctamente. Si omites la cláusula WHERE, se eliminarán todas las filas de la tabla, lo que podría resultar en la pérdida accidental de datos.",DW,N],4,p5(2)),
+k("Teoria - BBDD - Funcion INSERT - Restricciones","Sentencia INSERT => Restricciones de Insercion:",["Restricciones de Sinónimos y Vista: Si intentas insertar datos en una vista o sinónimo, debes asegurarte de que la vista o sinónimo sea actualizable. Algunas vistas pueden ser de solo lectura, en cuyo caso no podrás realizar una inserción directamente.","Restricciones de Tabla Particionada: Si la tabla es particionada, la inserción debe no cumplir con las reglas de particionamiento definidas para que los datos se distribuyan correctamente entre las particiones.","Restricciones de Identidad: Si una columna está configurada como una columna de identidad (IDENTITY), SQL Server generará no automáticamente un valor para esa columna y se debe aleatorio especificar un valor para una columna de identidad durante una inserción, a menos que uses SET IDENTITY_INSERT para esa tabla.","Restricciones de Locks: Durante una inserción, SQL Server no puede aplicar bloqueos en la tabla para asegurar la integridad de los datos, lo que podría afectar el rendimiento y la concurrencia.",DW,N],0,p5(3))
+);
+const $=id=>document.getElementById(id);
+const cfg=$("cfg"),run=$("run"),root=$("qs"),st=$("st"),tm=$("tm"),res=$("res"),qn=$("qn"),tl=$("tl");
+const total=Q.length;
+const MF=["exmn.pdf","MIeL---Materias-Interactivas-en-Linea_20.pdf","MIeL---Materias-Interactivas-en-LineaSA.pdf"];
+Q.forEach(x=>{x.md=[];const s=x.s||"";MF.forEach((f,i)=>{if(s.includes(f))x.md.push("m"+(i+1))});R5.forEach((r,i)=>{if(s.includes(r))x.md.push("p"+(i+1))})});
+let sel=[],btns=[],ans=[],done=0,hits=0,timer=null,t0=0,limit=0,pm=60,finished=false,inst=true;
+const TGR=[["Consultas SQL (LIKE, agregado, GROUP BY, HAVING, JOIN)",/^Teoria - BBDD - (Clausula LIKE|Funciones de Agregado|Funcion GROUP BY|Funcion HAVING|Funcion JOIN)/],["INSERT, UPDATE y DELETE",/Funcion (INSERT|UPDATE|DELETE)/],["Transact-SQL y características de SQL",/^(Programación en SQL Server|SQL - Caracteristicas)/],["Diagrama Entidad-Relación",/^Diagrama de Entidad Relacion/],["Claves y normalización",/^(CLAVE|Normalizacion)/],["Funciones",/^Funciones/],["Práctica de funciones de texto",/^Practica Funciones/],["Vistas",/Vistas|VISTAS/],["Índices",/Indices/],["Práctica (restricciones, combinaciones, SQL inversa)",/^Practica - (Creacion|Combinaciones|SQL Inversa)/]],TOTR="Otros temas";
+Q.forEach(x=>{const g=TGR.find(r=>r[1].test(x.t));x.gr=g?g[0]:TOTR});
+const tcnt={};Q.forEach(x=>{tcnt[x.gr]=(tcnt[x.gr]||0)+1});
+const tbox=$("tbox");
+[...TGR.map(r=>r[0]),TOTR].forEach(n=>{
+  if(!tcnt[n])return;
+  const l=document.createElement("label");l.className="opt";
+  const i=document.createElement("input");i.type="checkbox";i.value=n;i.checked=true;i.onchange=tsync;
+  const s=document.createElement("span");s.textContent=n;
+  l.appendChild(i);l.appendChild(s);tbox.appendChild(l);
+});
+function mcur(){return $("mdl").value}
+function inM(x){const v=mcur();if(v==="all")return true;if(v==="g26")return x.md.some(m=>m[0]==="m");if(v==="g25")return x.md.some(m=>m[0]==="p");return x.md.includes(v)}
+function rcnt(){const c={};Q.forEach(x=>{if(inM(x))c[x.gr]=(c[x.gr]||0)+1});tbox.querySelectorAll("label").forEach(l=>{const i=l.querySelector("input"),s=l.querySelector("span"),n=c[i.value]||0;s.textContent=i.value+" ("+n+")";l.style.display=n?"":"none"})}
+function tpool(){const on=new Set([...tbox.querySelectorAll("input:checked")].map(i=>i.value));return [...Q.keys()].filter(i=>on.has(Q[i].gr)&&inM(Q[i]))}
+$("mdl").onchange=()=>{tbox.querySelectorAll("input").forEach(i=>i.checked=true);rcnt();const p=tpool().length;qn.value=mcur()==="all"?Math.min(20,p):p;tsync()};
+function tsync(){
+  const p=tpool().length;
+  $("qmax").textContent=p;qn.max=p;
+  const v=parseInt(qn.value)||20;qn.value=Math.max(p?1:0,Math.min(v,p));
+  $("tmsg").hidden=p>0;$("go").disabled=p===0;
+}
+$("tall").onclick=()=>{tbox.querySelectorAll("input").forEach(i=>i.checked=true);tsync()};
+$("tnone").onclick=()=>{tbox.querySelectorAll("input").forEach(i=>i.checked=false);tsync()};
+qn.value=Math.min(20,total);rcnt();tsync();
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt)e.textContent=txt;return e}
+const fmt=s=>{s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+document.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{{const p=tpool().length;qn.value=b.dataset.q==="all"?p:Math.min(+b.dataset.q,p)}});
+document.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{tl.value=b.dataset.t});
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function upd(){st.textContent=inst?"Respondidas "+done+" de "+sel.length+". Correctas: "+hits:"Respondidas "+done+" de "+sel.length+". La corrección se muestra al finalizar."}
+function tick(){
+  const el_=(Date.now()-t0)/1000;
+  if(limit){
+    const left=limit-el_;
+    tm.textContent="Tiempo restante: "+fmt(left);
+    tm.classList.toggle("low",left<=60);
+    if(left<=0)finish("time");
+  }else tm.textContent="Tiempo: "+fmt(el_);
+}
+function render(){
+  root.textContent="";btns=[];ans=[];done=0;hits=0;
+  sel.forEach((x,i)=>{
+    const d=el("section","q");
+    d.appendChild(el("p","t",(i+1)+". "+x.t+(x.q?"\n"+x.q:"")));
+    d.firstChild.style.whiteSpace="pre-line";
+    if(x.c)d.appendChild(el("pre",null,x.c));
+    if(x.s){const n=el("p",null,x.s);n.style.cssText="font-size:.85em;opacity:.7;font-style:italic;margin:.25rem 0 .5rem";d.appendChild(n)}
+    if(x.w){const w=el("p",null);const wb=el("strong",null,"Aclaración: ");w.appendChild(wb);w.appendChild(document.createTextNode(x.w));w.style.cssText="font-size:.9em;margin:.25rem 0 .75rem;padding:8px 12px;border-left:3px solid var(--no);background:var(--nob);border-radius:4px";d.appendChild(w)}
+    const bs=x.o.map((s,j)=>{
+      const b=el("button","o",String.fromCharCode(97+j)+") "+s);b.type="button";
+      b.onclick=()=>{
+        if(finished)return;if(!inst){if(ans[i]===undefined)done++;ans[i]=j;bs.forEach((k,m)=>{k.classList.toggle("sel",m===j);k.setAttribute("aria-pressed",m===j)});upd();return}if(ans[i]!==undefined)return;
+        ans[i]=j;
+        bs.forEach(k=>k.disabled=true);
+        bs[x.a].classList.add("ok");
+        done++;
+        if(j===x.a)hits++;else b.classList.add("no");
+        upd();
+        if(done===sel.length)finish("done");
+      };
+      d.appendChild(b);return b;
+    });
+    btns.push(bs);
+    root.appendChild(d);
+  });
+  upd();
+}
+function start(){
+  let idx=tpool();
+  if(!idx.length)return;
+  const n=Math.min(idx.length,Math.max(1,parseInt(qn.value)||1));
+  limit=Math.max(0,parseInt(tl.value)||0)*60;
+  inst=document.querySelector("input[name=cor]:checked").value==="now";
+  const rnd=document.querySelector("input[name=ord]:checked").value==="rnd";
+  if(rnd)shuffle(idx);
+  idx=idx.slice(0,n);
+  sel=idx.map(i=>Q[i]);
+  finished=false;
+  res.hidden=true;res.textContent="";
+  $("fin").hidden=false;
+  cfg.hidden=true;run.hidden=false;
+  render();
+  t0=Date.now();clearInterval(timer);tick();timer=setInterval(tick,1000);
+  window.scrollTo(0,0);
+}
+function finish(why){
+  if(finished)return;
+  finished=true;clearInterval(timer);
+  const used=Math.min((Date.now()-t0)/1000,limit||Infinity);
+  if(!inst){hits=0;ans.forEach((v,i)=>{if(v===sel[i].a)hits++})}
+  btns.forEach((bs,i)=>{
+    bs.forEach(b=>{b.disabled=true;b.classList.remove("sel")});if(!inst&&ans[i]!==undefined){bs[sel[i].a].classList.add("ok");if(ans[i]!==sel[i].a)bs[ans[i]].classList.add("no")}
+    if(ans[i]===undefined)bs[sel[i].a].classList.add("rev");
+  });
+  const n=sel.length,wrong=done-hits,blank=n-done,pct=Math.round(hits*1000/n)/10,pass=hits*100/n>=pm;
+  res.textContent="";
+  res.appendChild(el("h2",null,why==="time"?"Se acabó el tiempo":"Resultado"));
+  res.appendChild(el("p","verdict "+(pass?"ok":"no"),(pass?"APROBADO":"DESAPROBADO")+" — "+pct+"% (mínimo para aprobar: "+pm+"%)"));
+  res.appendChild(el("p",null,"Correctas: "+hits+" de "+n+" ("+pct+"%)"));
+  res.appendChild(el("p",null,"Incorrectas: "+wrong+(blank?" · Sin responder: "+blank+" (se marca con línea punteada la opción correcta)":"")));
+  res.appendChild(el("p",null,"Tiempo usado: "+fmt(used)+(limit?" de "+fmt(limit):"")));
+  const r=el("div","row");r.style.marginTop="12px";
+  const again=el("button","btn","Repetir con estas opciones");again.type="button";again.onclick=start;
+  const chg=el("button","btn sec","Cambiar opciones");chg.type="button";chg.onclick=toCfg;
+  r.appendChild(again);r.appendChild(chg);res.appendChild(r);
+  res.hidden=false;
+  $("fin").hidden=true;
+  tm.classList.remove("low");
+  tm.textContent=why==="time"?"Tiempo agotado":"Tiempo: "+fmt(used);
+  window.scrollTo(0,0);res.focus({preventScroll:true});
+}
+function toCfg(){clearInterval(timer);finished=true;run.hidden=true;cfg.hidden=false;window.scrollTo(0,0)}
+$("go").onclick=start;
+$("fin").onclick=()=>finish("manual");
+$("back").onclick=toCfg;
+</script></body></html>
