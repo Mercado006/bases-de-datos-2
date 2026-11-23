@@ -10,6 +10,6 @@ En el grupo de WhatsApp también se dijo que el final es en computadora, multipl
 
 # Qué recomiendo estudiar
 
-Como se dice que el final está compuesto por 30 preguntas multiple choice provenientes de ambos el primer y segundo parcial, recomiendo practicar con los parciales multiple choice que se tomaron con anterioridad, especialmente los que se tomaron este cuatrimestre (material disponible en la carpeta parciales). 
+Teniendo en cuenta lo anterior, recomiendo practicar con los exámenes multiple choice tomados con anterioridad, especialmente con los que se tomaron durante este cuatrimestre, que están disponibles en la carpeta parciales.
 
 Para las preguntas nuevas que puedan llegar a aparecer, **es muy importante estudiar del material en formato Word disponible en MIeL**, ya que la gran mayoría de preguntas y respuestas de los parciales que se tomaron fueron sacadas textual de allí. 
